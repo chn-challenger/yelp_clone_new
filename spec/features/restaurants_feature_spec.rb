@@ -32,8 +32,23 @@ feature 'restaurants' do
     end
   end
 
+  context 'detailing a restaurant' do
+    let!(:kfc){Restaurant.create(name:'KFC')}
+
+    scenario 'detailing a restaurant' do
+      visit '/restaurants'
+      click_link 'KFC'
+      expect(page).to have_content 'KFC'
+      expect(current_path).to eq "/restaurants/#{kfc.id}"
+    end
+  end
+
 end
 
 
 # No restaurants yet
 # <a href='#'>Add a restaurant</a>
+
+
+# <h2><%= restaurant.name %></h2>
+# <a href="/restaurants/#{restaurant.id}"><%=restaurant.name %></a>

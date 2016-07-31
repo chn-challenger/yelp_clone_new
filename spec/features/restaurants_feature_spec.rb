@@ -26,16 +26,18 @@ feature 'restaurants' do
       visit '/restaurants'
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'KFC'
+      fill_in 'Description', with: 'Chicken'
       click_button 'Create Restaurant'
       expect(page).to have_content 'KFC'
+      expect(page).to have_content 'Chicken'
       expect(current_path).to eq '/restaurants'
     end
   end
 
-  context 'detailing a restaurant' do
+  context 'viewing restaurants' do
     let!(:kfc){Restaurant.create(name:'KFC')}
 
-    scenario 'detailing a restaurant' do
+    scenario 'let a user view a restaurant' do
       visit '/restaurants'
       click_link 'KFC'
       expect(page).to have_content 'KFC'
@@ -43,8 +45,35 @@ feature 'restaurants' do
     end
   end
 
-end
+  context 'editing restaurants' do
+    before{Restaurant.create name: 'KFC', description: 'Disgusting fried chicken'}
 
+    scenario 'let a user edit a restaurant' do
+      visit '/restaurants'
+      click_link 'Edit KFC'
+      fill_in 'Name', with: 'Kentucky'
+      fill_in 'Description', with: 'Disgusting fried chicken'
+      click_button 'Update Restaurant'
+      expect(page).to have_content 'Kentucky'
+      expect(page).to have_content 'Disgusting fried chicken'
+      expect(current_path).to eq "/restaurants"
+    end
+  end
+
+  context 'deleting restaurants' do
+    before{Restaurant.create name: 'KFC', description: 'Chicken'}
+
+    scenario 'let a user delete a restaurant' do
+      visit '/restaurants'
+      click_link 'Delete KFC'
+      expect(page).not_to have_content 'KFC'
+      expect(page).to have_content 'Restaurant deleted successfully'
+      expect(current_path).to eq "/restaurants"      
+    end
+  end
+
+end
+# <%= link_to "Delete #{restaurant.name}", restaurant_path(restaurant), method: :delete %>
 
 # No restaurants yet
 # <a href='#'>Add a restaurant</a>
